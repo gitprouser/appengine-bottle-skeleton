@@ -7,17 +7,19 @@ import requests
 import logging
 import time
 
+
 # Create the Bottle WSGI application.
 bottle = Bottle()
 # Note: We don't need to call run() since our application is embedded within
 # the App Engine WSGI application server.
 
 sandbox_url = 'https://api.sandbox.paypal.com'
+sandbox_web_url = 'https://www.sandbox.paypal.com'
 token_service = '/v1/oauth2/token'
 user_info_service = '/v1/oauth2/token/userinfo?schema=openid'
 
 redirect_url = 'https://hackathon-155402.appspot.com'
-lipp_url = sandbox_url + '/signin/authorize?response_type=code&scope=https%3A%2F%2Furi.paypal.com%2Fservices%2Fpayments%2Ffuturepayments&redirect_uri=https%3A%2F%2Fhackathon-155402.appspot.com&client_id=AcnzQ3fr47rBqJmxFVpwSBOws7W8Elkk6fJBpF7pfsgG8_FBckr4NQEloEPhVBw3tS0elJ9Azm2jaoSO'
+lipp_url = sandbox_web_url + '/signin/authorize?response_type=code&scope=https%3A%2F%2Furi.paypal.com%2Fservices%2Fpayments%2Ffuturepayments&redirect_uri=https%3A%2F%2Fhackathon-155402.appspot.com&client_id=AfCEGMbuFg_FvwVqX5kOXR6H5mYMurdHwmXgikTBWe2HIbqehI6bni5TuFH3QFDf3I3HhXR_6xk8FF0r'
 client_id = 'AfCEGMbuFg_FvwVqX5kOXR6H5mYMurdHwmXgikTBWe2HIbqehI6bni5TuFH3QFDf3I3HhXR_6xk8FF0r'
 client_id_secret = 'EMbbA65h6jSzGXb_kMbSsz6zMBFg0lZEk6mICisGGf2ipf6QMd2A82WancAad9GB4_0OXGlYpFFm1DIf'
 base64Encoded_clientId_clientSecret = "QWZDRUdNYnVGZ19GdndWcVg1a09YUjZINW1ZTXVyZEh3bVhnaWtUQldlMkhJYnFlaEk2Ym5pNVR1RkgzUUZEZjNJM0hoWFJfNnhrOEZGMHI6RU1iYkE2NWg2alN6R1hiX2tNYlNzejZ6TUJGZzBsWkVrNm1JQ2lzR0dmMmlwZjZRTWQyQTgyV2FuY0FhZDlHQjRfME9YR2xZcEZGbTFESWY="
