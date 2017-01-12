@@ -66,6 +66,8 @@ def hello():
         logging.info(e)
     user_info_response = r.json()
     logging.info(user_info_response)
+    # payer_id - is the uniquie identifier
+
     prepend_str = len('https://www.paypal.com/webapps/auth/identity/user/')
     return 'Hello World:' + user_info_response['user_id'][prepend_str:]
 
