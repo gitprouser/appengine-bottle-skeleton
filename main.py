@@ -35,14 +35,10 @@ def hello():
 
 
     # Step - 2 of the lipp integration
-    # refresh_token, id_token
-    # payload = "&".join(["grant_type=refresh_token", "refresh_token=<>"])
-
-
-
-
     logging.info("auth_headers" + str(auth_headers_token_service))
-    payload = "&".join(["grant_type=client_credentials", "response_type=id_token"])
+    payload = "&".join(["grant_type=authorization_code",
+                        "code=" + auth_code,
+                        "redirect_uri=https%3A%2F%2Fhackathon-155402.appspot.com"])
     logging.info("PayLoad:"+ payload)
 
     logging.info("uri:"+ sandbox_url + token_service)
@@ -52,12 +48,18 @@ def hello():
     except Exception as e:
         logging.info(e)
     lipp_resp = r.json()
+    logging.info(r.headers)
     logging.info(lipp_resp)
-    logging.info( "&".join(['access_token:' + lipp_resp['access_token'], "id_token:" + lipp_resp['id_token']]))
+    logging.info( "&".join(['access_token:' + lipp_resp['access_token'], "refresh_token:" + lipp_resp['refresh_token']]))
+
+    #  TODO persist refresh token lipp_resp['refresh_token']
+
     access_token = lipp_resp['access_token']
     auth_headers_user_info = {"Authorization": "Bearer " + access_token,
                               "Accept-Language": "en_US",
                               "Accept": "application/json"}
+    # refresh_token, id_token
+    # payload = "&".join(["grant_type=refresh_token", "refresh_token=<>"])
     try:
         r = requests.get(sandbox_url + user_info_service, headers = auth_headers_user_info, verify=False)
     except Exception as e:
