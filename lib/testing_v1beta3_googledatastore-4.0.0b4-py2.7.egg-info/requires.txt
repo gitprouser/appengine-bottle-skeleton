@@ -1,0 +1,3 @@
+proto-google-datastore-v1beta3==0.0.3pre
+oauth2client==1.5
+uritemplate==0.6

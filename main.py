@@ -17,6 +17,10 @@ sandbox_url = 'https://api.sandbox.paypal.com'
 sandbox_web_url = 'https://www.sandbox.paypal.com'
 token_service = '/v1/oauth2/token'
 user_info_service = '/v1/oauth2/token/userinfo?schema=openid'
+prepend_str = len('https://www.paypal.com/webapps/auth/identity/user/')
+
+# TODO Place holder to keep the {"user id" : "refresh tokens"}
+user_management = {}
 
 redirect_url = 'https://hackathon-155402.appspot.com'
 lipp_url = sandbox_web_url + '/signin/authorize?response_type=code&scope=https%3A%2F%2Furi.paypal.com%2Fservices%2Fpayments%2Ffuturepayments&redirect_uri=https%3A%2F%2Fhackathon-155402.appspot.com&client_id=AfCEGMbuFg_FvwVqX5kOXR6H5mYMurdHwmXgikTBWe2HIbqehI6bni5TuFH3QFDf3I3HhXR_6xk8FF0r'
@@ -57,6 +61,7 @@ def hello():
     #  TODO persist refresh token lipp_resp['refresh_token']
 
     access_token = lipp_resp['access_token']
+    refresh_token = lipp_resp['refresh_token']
     auth_headers_user_info = {"Authorization": "Bearer " + access_token,
                               "Accept-Language": "en_US",
                               "Accept": "application/json"}
@@ -69,9 +74,9 @@ def hello():
     user_info_response = r.json()
     logging.info(user_info_response)
     # payer_id - is the uniquie identifier
-
-    prepend_str = len('https://www.paypal.com/webapps/auth/identity/user/')
-    return 'Hello World:' + user_info_response['user_id'][prepend_str:]
+    payer_id = user_info_response['payer_id']
+    user_management[payer_id] = refresh_token
+    return 'Hello World:' + user_info_response['payer_id']
 
 
 @bottle.get('/<game_id:int>/login')
@@ -79,6 +84,35 @@ def lipp(game_id):
     # do a get request : https://www.msmaster.qa.paypal.com/signin/authorize?client_id=AU9Brr7cKnWaL9uFiOlCnwgKaYDO3pa9nvOBhM6qJZCuxCnPMi3VdfPm45qkOrg6L_S5w2hlpmXnSX6V&response_type=code&scope=https://uri.paypal.com/services/payments/futurepayments&redirect_uri=urn:ietf:wg:oauth:2.0:oob&partner_client_id=AcnzQ3fr47rBqJmxFVpwSBOws7W8Elkk6fJBpF7pfsgG8_FBckr4NQEloEPhVBw3tS0elJ9Azm2jaoSO
     # response CODE
     return lipp_url
+
+@bottle.get('/<payer_id>/refresh_token')
+def refresh_token_exchange(payer_id):
+    refresh_token = user_management[payer_id]
+    access_token = rt_to_at_exchange(refresh_token)
+    logging.info("access_token:'" + access_token + "'")
+    return access_token
+
+
+def rt_to_at_exchange(refresh_token):
+    # Step - 2 of the lipp integration
+    logging.info("auth_headers" + str(auth_headers_token_service))
+    payload = "&".join(["grant_type=refresh_token",
+                        "refresh_token=" + refresh_token,
+                        "redirect_uri=https%3A%2F%2Fhackathon-155402.appspot.com"])
+    logging.info("PayLoad:"+ payload)
+
+    logging.info("uri:"+ sandbox_url + token_service)
+    logging.info(time.time())
+    try:
+        r = requests.post(sandbox_url + token_service, headers = auth_headers_token_service, data=payload, verify=False)
+    except Exception as e:
+        logging.info(e)
+    rt_to_at_resp = r.json()
+    logging.info(r.headers)
+    logging.info('rt_to_at_exchange_call')
+    logging.info(rt_to_at_resp)
+    return rt_to_at_resp['access_token']
+
 
 
 # Define an handler for 404 errors.

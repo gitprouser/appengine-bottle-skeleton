@@ -1,0 +1,16 @@
+MANIFEST.in
+README.rst
+setup.cfg
+setup.py
+googledatastore/__init__.py
+googledatastore/connection.py
+googledatastore/connection_test.py
+googledatastore/helper.py
+googledatastore/helper_test.py
+googledatastore/local_cloud_datastore.py
+testing_v1beta3_googledatastore.egg-info/PKG-INFO
+testing_v1beta3_googledatastore.egg-info/SOURCES.txt
+testing_v1beta3_googledatastore.egg-info/dependency_links.txt
+testing_v1beta3_googledatastore.egg-info/pbr.json
+testing_v1beta3_googledatastore.egg-info/requires.txt
+testing_v1beta3_googledatastore.egg-info/top_level.txt
